@@ -1,0 +1,14 @@
+---
+- name: ensure rsyslog is installed
+  apt:
+    name: "{{ rsyslog_package_name|default('rsyslog') }}"
+    state: present
+    cache_valid_time: 3600
+
+- name: ensure rsyslog-relp is installed
+  apt:
+    name: "{{ rsyslog_rule_remote_relp_pkg|default('rsyslog-relp') }}"
+    state: present
+  when:
+    - rsyslog_rule_remote is defined
+    - rsyslog_rule_remote_relp is defined

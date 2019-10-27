@@ -1,0 +1,23 @@
+---
+- name: add official PPA for rsyslog
+  apt_repository:
+    repo: 'ppa:adiscon/{{ rsyslog_ppa_version }}'
+    state: present
+    update_cache: true
+  register: rsyslog_ppa_added
+  when: rsyslog_ppa_use | bool
+
+- name: upgrade rsyslog to version from PPA
+  apt:
+    name: "{{ rsyslog_package_name|default('rsyslog') }}"
+    state: latest
+  when: rsyslog_ppa_added.changed
+  tags: ['skip_ansible_lint']
+
+- name: ensure rsyslog-relp is installed
+  apt:
+    name: "{{ rsyslog_rule_remote_relp_pkg|default('rsyslog-relp') }}"
+    state: present
+  when:
+    - rsyslog_rule_remote is defined
+    - rsyslog_rule_remote_relp is defined

@@ -1,0 +1,45 @@
+---
+- name: remove default rsyslog rules
+  file:
+    path: "{{ rsyslog_conf_path }}"
+    state: absent
+  when: rsyslog_remove_default_rules | bool
+  notify: restart rsyslog
+
+- name: ensure rsyslog_conf_path exists
+  file:
+    path: "{{ rsyslog_conf_path }}"
+    owner: root
+    group: "{{ root_group }}"
+    mode: 0755
+    state: directory
+
+- name: add managed rsyslog rules
+  template:
+    src: "{{ item.template|default(rsyslog_rules_template) }}"
+    dest: "{{ rsyslog_conf_path }}/{{ item.filename|default(item.priority ~ '-' ~ item.rule_name ~ '.conf') }}"
+    force: true
+    owner: root
+    group: "{{ root_group }}"
+    mode: 0644
+  when: item.state|default('present') != 'absent'
+  with_items:
+    - "{{ rsyslog_rule_default|default([]) }}"
+    - "{{ rsyslog_rule_docker|default([]) }}"
+    - "{{ rsyslog_rule_remote|default([]) }}"
+    - "{{ rsyslog_rules|default([]) }}"
+  notify: restart rsyslog
+  tags: ['skip_ansible_lint']
+
+- name: remove managed rsyslog rules
+  file:
+    path: "{{ rsyslog_conf_path }}/{{ item.filename|default(item.priority ~ '-' ~ item.rule_name ~ '.conf') }}"
+    state: absent
+  when: item.state|default('present') == 'absent'
+  with_items:
+    - "{{ rsyslog_rule_default|default([]) }}"
+    - "{{ rsyslog_rule_docker|default([]) }}"
+    - "{{ rsyslog_rule_remote|default([]) }}"
+    - "{{ rsyslog_rules|default([]) }}"
+  notify: restart rsyslog
+  tags: ['skip_ansible_lint']

@@ -1,0 +1,20 @@
+---
+- name: ensure rsyslog_rule_docker_path exists
+  file:
+    path: "{{ rsyslog_rule_docker_path|default('/var/log/docker') }}"
+    owner: "{{ rsyslog_user }}"
+    group: "{{ rsyslog_group }}"
+    mode: 0755
+    state: directory
+  when: rsyslog_rule_docker is defined
+
+- name: ensure rsyslog_rule_remote_path exists
+  file:
+    path: "{{ rsyslog_rule_remote_path|default('/var/log/remote') }}"
+    owner: "{{ rsyslog_user }}"
+    group: "{{ rsyslog_group }}"
+    mode: 0755
+    state: directory
+  when:
+    - rsyslog_rule_remote is defined
+    - rsyslog_rule_remote.role == "server"

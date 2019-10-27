@@ -1,0 +1,74 @@
+# {{ ansible_managed }}
+{% if rsyslog_rule_remote.role == "server" %}
+{% block server_protocol %}
+{% if rsyslog_rule_remote_relp is defined %}
+module(load="imrelp" ruleset="{{ rsyslog_rule_remote.ruleset_name }}")
+input(type="imrelp" port="{{ rsyslog_rule_remote_relp.port }}"
+{%- if rsyslog_rule_remote_relp.address is defined %} address="{{ rsyslog_rule_remote_relp.address }}"{% endif -%}
+{%- if rsyslog_rule_remote_relp.tls is defined %} tls="on"
+{%- if rsyslog_rule_remote_relp.tls_cacert is defined %} tls.cacert="{{ rsyslog_rule_remote_relp.tls_cacert }}"{% endif -%}
+{%- if rsyslog_rule_remote_relp.tls_mycert is defined %} tls.mycert="{{ rsyslog_rule_remote_relp.tls_mycert }}"{% endif -%}
+{%- if rsyslog_rule_remote_relp.tls_myprivkey is defined %} tls.myprivkey="{{ rsyslog_rule_remote_relp.tls_myprivkey }}"{% endif -%}
+{%- if rsyslog_rule_remote_relp.tls_authmode is defined %} tls.authmode="{{ rsyslog_rule_remote_relp.tls_authmode }}"{% endif -%}
+{% endif -%})
+{% endif %}
+{% if rsyslog_rule_remote_tcp is defined %}
+module(load="imtcp" ruleset="{{ rsyslog_rule_remote.ruleset_name }}")
+input(type="imtcp" port="{{ rsyslog_rule_remote_tcp.port }}"
+{%- if rsyslog_rule_remote_tcp.address is defined %} address="{{ rsyslog_rule_remote_tcp.address }}"{% endif -%})
+{% endif %}
+{% if rsyslog_rule_remote_udp is defined %}
+module(load="imudp" ruleset="{{ rsyslog_rule_remote.ruleset_name }}")
+input(type="imudp" port="{{ rsyslog_rule_remote_udp.port }}"
+{%- if rsyslog_rule_remote_udp.address is defined %} address="{{ rsyslog_rule_remote_udp.address }}"{% endif -%})
+{% endif %}
+{% endblock %}
+
+{% block server_templates %}
+template(name="TmplAuthpriv" type="string"
+         string="{{ rsyslog_rule_remote_path|default('/var/log/remote') }}/%HOSTNAME%/auth.log"
+        )
+template(name="TmplSyslog" type="string"
+         string="{{ rsyslog_rule_remote_path|default('/var/log/remote') }}/%HOSTNAME%/syslog.log"
+        )
+template(name="TmplRsyslog" type="string"
+         string="{{ rsyslog_rule_remote_path|default('/var/log/remote') }}/%HOSTNAME%/rsyslog.log"
+        )
+template(name="TmplKern" type="string"
+         string="{{ rsyslog_rule_remote_path|default('/var/log/remote') }}/%HOSTNAME%/kern.log"
+        )
+template(name="TmplMail" type="string"
+         string="{{ rsyslog_rule_remote_path|default('/var/log/remote') }}/%HOSTNAME%/mail.log"
+        )
+{% endblock %}
+
+{% block server_rulest %}
+ruleset(name="{{ rsyslog_rule_remote.ruleset_name }}") {
+  auth,authpriv.*         action(type="omfile" DynaFile="TmplAuthpriv")
+  *.*;auth,authpriv.none  action(type="omfile" DynaFile="TmplSyslog")
+  syslog.*                action(type="omfile" DynaFile="TmplRsyslog")
+  kern.*                  action(type="omfile" DynaFile="TmplKern")
+  mail.*                  action(type="omfile" DynaFile="TmplMail")
+}
+{% endblock %}
+{% endif %}
+{% if rsyslog_rule_remote.role == "client" %}
+{% block client_protocol %}
+{% if rsyslog_rule_remote_relp is defined %}
+module(load="omrelp")
+action(type="omrelp" port="{{ rsyslog_rule_remote_relp.port }}" target="{{ rsyslog_rule_remote_relp.target }}"
+{%- if rsyslog_rule_remote_relp.tls is defined %} tls="on"
+{%- if rsyslog_rule_remote_relp.tls_cacert is defined %} tls.cacert="{{ rsyslog_rule_remote_relp.tls_cacert }}"{% endif -%}
+{%- if rsyslog_rule_remote_relp.tls_mycert is defined %} tls.mycert="{{ rsyslog_rule_remote_relp.tls_mycert }}"{% endif -%}
+{%- if rsyslog_rule_remote_relp.tls_myprivkey is defined %} tls.myprivkey="{{ rsyslog_rule_remote_relp.tls_myprivkey }}"{% endif -%}
+{%- if rsyslog_rule_remote_relp.tls_authmode is defined %} tls.authmode="{{ rsyslog_rule_remote_relp.tls_authmode }}"{% endif -%}
+{% endif -%})
+{% endif %}
+{% if rsyslog_rule_remote_tcp is defined %}
+action(type="omfwd" Port="{{ rsyslog_rule_remote_tcp.port }}" Target="{{ rsyslog_rule_remote_tcp.target }}" Protocol="tcp")
+{% endif %}
+{% if rsyslog_rule_remote_udp is defined %}
+action(type="omfwd" Port="{{ rsyslog_rule_remote_udp.port }}" Target="{{ rsyslog_rule_remote_udp.target }}" Protocol="udp")
+{% endif %}
+{% endblock %}
+{% endif %}

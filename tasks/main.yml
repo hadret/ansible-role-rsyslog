@@ -1,0 +1,60 @@
+---
+- name: include OS-specific variables
+  include_vars: "{{ ansible_os_family }}.yml"
+
+- name: define rsyslog_user
+  set_fact:
+    rsyslog_user: "{{ __rsyslog_user }}"
+  when: rsyslog_user is not defined
+
+- name: define rsyslog_group
+  set_fact:
+    rsyslog_group: "{{ __rsyslog_group }}"
+  when: rsyslog_group is not defined
+
+- name: define rsyslog_file_create_mode
+  set_fact:
+    rsyslog_file_create_mode: "{{ __rsyslog_file_create_mode }}"
+  when: rsyslog_file_create_mode is not defined
+
+- name: define rsyslog_dir_create_mode
+  set_fact:
+    rsyslog_dir_create_mode: "{{ __rsyslog_dir_create_mode }}"
+  when: rsyslog_dir_create_mode is not defined
+
+- name: define rsyslog_umask
+  set_fact:
+    rsyslog_umask: "{{ __rsyslog_umask }}"
+  when: rsyslog_umask is not defined
+
+- include_tasks: setup-Debian.yml
+  when: ansible_distribution == 'Debian'
+
+- include_tasks: setup-Ubuntu.yml
+  when: ansible_distribution == 'Ubuntu'
+
+# rules configuration
+- import_tasks: rules.yml
+
+# extras configuration
+- include_tasks: extras.yml
+  when: (rsyslog_rule_remote is defined) or
+        (rsyslog_rule_docker is defined)
+
+# rsyslog setup
+- name: copy main rsyslog config file
+  template:
+    src: "{{ rsyslog_conf_template }}"
+    dest: "{{ rsyslog_conf_file_path }}"
+    owner: root
+    group: "{{ root_group }}"
+    mode: 0644
+    validate: /usr/sbin/rsyslogd -N1 -f %s
+  notify:
+    - restart rsyslog
+
+- name: ensure rsyslog is up and enabled on boot
+  service:
+    name: rsyslog
+    state: "{{ rsyslog_service_state }}"
+    enabled: "{{ rsyslog_service_enabled }}"

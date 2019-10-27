@@ -1,0 +1,78 @@
+---
+# Use the official rsyslog PPA for Ubuntu (v8-devel/v8-stable)
+rsyslog_ppa_use: true
+rsyslog_ppa_version: v8-stable
+
+# Name of the package to install
+# rsyslog_package_name: "rsyslog"
+
+rsyslog_service_state: started
+rsyslog_service_enabled: true
+
+rsyslog_conf_template: "rsyslog.conf.j2"
+rsyslog_rules_template: "rules.conf.j2"
+
+rsyslog_action_file_default_template: "RSYSLOG_TraditionalFileFormat"
+rsyslog_repeated_msg_reduction: 'off'
+
+# Example extra config for the main rsyslog config file
+# rsyslog_extra_conf_options: |
+#   module(load="imudp" ruleset="udp")
+#   input(type="imudp" port="1514")
+
+# Preconfigured default rsyslog rules
+rsyslog_rule_default:
+  rule_name: "default"
+  priority: 50
+  template: "default.conf.j2"
+
+# Preconfigured docker rsyslog rules
+# rsyslog_rule_docker: # /etc/rsyslog.d/20-docker.conf
+#   rule_name: "docker"
+#   priority: 20
+#   template: "docker.conf.j2"
+# rsyslog_rule_docker_path: /var/log/docker
+# rsyslog_rule_docker_template: "DockerLogFileName"
+# rsyslog_rule_docker_tag_all: true
+
+# Preconfigured remote logging rsyslog rules
+# rsyslog_rule_remote: # /etc/rsyslog.d/99-remote.conf
+#   rule_name: "remote"
+#   role: "server" # server/client
+#   priority: 99
+#   template: "remote.conf.j2"
+#   ruleset_name: "remote"
+# rsyslog_rule_remote_path: /var/log/remote
+
+# rsyslog_rule_remote_relp:
+#   address: 0.0.0.0
+#   target: central.server.local
+#   port: 514
+#   tls: true
+#   tls_cacert: "/tls-certs/ca.pem"
+#   tls_mycert: "/tls-certs/cert.pem"
+#   tls_myprivkey: "/tls-certs/key.pem"
+#   tls_authmode: "fingerprint" # fingerprint/name
+# rsyslog_rule_remote_relp_pkg: rsyslog-relp
+
+# rsyslog_rule_remote_tcp:
+#   address: 0.0.0.0
+#   target: "central.server.local"
+#   port: 514
+
+# rsyslog_rule_remote_udp:
+#   address: 0.0.0.0
+#   target: "central.server.local"
+#   port: 514
+
+rsyslog_remove_default_rules: false
+rsyslog_rules: []
+#   - rule_name: "remote-relp" # name of the rule
+#     priority: 99 # order of the rules may be important
+#     ruleset: |
+#       module(load="omudp")
+#       action(type="omudp" port="1514")
+#   # Properties that are only added if defined:
+#   filename: "99-remote-relp.conf" # default: "$priority-$rule_name.conf"
+#   template: "" # override the `rsyslog_template` per ruleset
+#   state: "absent" # remove the ruleset configuration

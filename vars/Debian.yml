@@ -1,0 +1,11 @@
+---
+root_group: root
+rsyslog_conf_path: /etc/rsyslog.d
+rsyslog_conf_file_path: /etc/rsyslog.conf
+rsyslog_spool_path: /var/spool/rsyslog
+
+__rsyslog_user: "syslog"
+__rsyslog_group: "adm"
+__rsyslog_file_create_mode: "0640"
+__rsyslog_dir_create_mode: "0755"
+__rsyslog_umask: "0022"

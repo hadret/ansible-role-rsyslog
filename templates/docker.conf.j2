@@ -1,0 +1,18 @@
+# {{ ansible_managed }}
+{% block docker_rules %}
+template(name="{{ rsyslog_rule_docker_template|default('DockerLogFileName') }}" type="list") {
+   constant(value="{{ rsyslog_rule_docker_path|default('/var/log/docker') }}/")
+   property(name="syslogtag" securepath="replace" \
+            regex.expression="docker/\\(.*\\)\\[" regex.submatch="1")
+   constant(value=".log")
+}
+{% if rsyslog_rule_docker_tag_all is defined -%}
+if $programname == 'docker' then {{ rsyslog_rule_docker_path|default('/var/log/docker') }}/all.log
+{% endif -%}
+if $programname == 'docker' then \
+  if $syslogtag contains 'docker/' then \
+    ?{{ rsyslog_rule_docker_template|default('DockerLogFileName') }}
+  else
+    {{ rsyslog_rule_docker_path|default('/var/log/docker') }}/no_tag.log
+& stop
+{% endblock %}

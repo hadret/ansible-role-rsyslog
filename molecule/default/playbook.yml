@@ -1,0 +1,42 @@
+---
+- name: test all the things
+  hosts: all
+
+  vars:
+    rsyslog_ppa_use: true
+    rsyslog_rule_default:
+      rule_name: "default"
+      priority: 50
+      template: "default.conf.j2"
+    rsyslog_rule_docker:
+      rule_name: "docker"
+      priority: 20
+      template: "docker.conf.j2"
+    rsyslog_rule_docker_tag_all: true
+    rsyslog_rule_remote:
+      rule_name: "remote"
+      role: server
+      priority: 99
+      template: "remote.conf.j2"
+      ruleset_name: "remote"
+    rsyslog_rule_remote_relp:
+      port: 514
+    rsyslog_rules:
+      - rule_name: "remote-udp"
+        priority: 99
+        ruleset: |
+          module(load="imudp")
+          input(type="imudp" port="514")
+
+  pre_tasks:
+    - name: update apt cache
+      apt: update_cache=yes cache_valid_time=600
+      when: ansible_os_family == 'Debian'
+      changed_when: false
+    - name: define rsyslog_user
+      set_fact:
+        rsyslog_user: "root"
+      when: ansible_distribution == 'Debian'
+
+  roles:
+    - role: ansible-role-rsyslog

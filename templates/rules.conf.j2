@@ -1,0 +1,6 @@
+# {{ ansible_managed }}
+{% block ruleset %}
+{% if item.ruleset is defined %}
+{{ item.ruleset }}
+{% endif %}
+{% endblock %}
