@@ -33,6 +33,10 @@
       apt: update_cache=yes cache_valid_time=600
       when: ansible_os_family == 'Debian'
       changed_when: false
+    - name: fix missing dirmngr on Ubuntu 18.04 or later
+      apt: name=dirmngr state=present
+      changed_when: false
+      when: ansible_distribution == 'Ubuntu'
     - name: define rsyslog_user
       set_fact:
         rsyslog_user: "root"
