@@ -2,8 +2,8 @@
 {% if rsyslog_rule_remote.role == "server" %}
 {% block server_protocol %}
 {% if rsyslog_rule_remote_relp is defined %}
-module(load="imrelp" ruleset="{{ rsyslog_rule_remote.ruleset_name }}")
-input(type="imrelp" port="{{ rsyslog_rule_remote_relp.port }}"
+module(load="imrelp")
+input(type="imrelp" port="{{ rsyslog_rule_remote_relp.port }}" ruleset="{{ rsyslog_rule_remote.ruleset_name }}"
 {%- if rsyslog_rule_remote_relp.address is defined %} address="{{ rsyslog_rule_remote_relp.address }}"{% endif -%}
 {%- if rsyslog_rule_remote_relp.tls is defined %} tls="on"
 {%- if rsyslog_rule_remote_relp.tls_cacert is defined %} tls.cacert="{{ rsyslog_rule_remote_relp.tls_cacert }}"{% endif -%}
@@ -13,13 +13,13 @@ input(type="imrelp" port="{{ rsyslog_rule_remote_relp.port }}"
 {% endif -%})
 {% endif %}
 {% if rsyslog_rule_remote_tcp is defined %}
-module(load="imtcp" ruleset="{{ rsyslog_rule_remote.ruleset_name }}")
-input(type="imtcp" port="{{ rsyslog_rule_remote_tcp.port }}"
+module(load="imtcp")
+input(type="imtcp" port="{{ rsyslog_rule_remote_tcp.port }}" ruleset="{{ rsyslog_rule_remote.ruleset_name }}"
 {%- if rsyslog_rule_remote_tcp.address is defined %} address="{{ rsyslog_rule_remote_tcp.address }}"{% endif -%})
 {% endif %}
 {% if rsyslog_rule_remote_udp is defined %}
-module(load="imudp" ruleset="{{ rsyslog_rule_remote.ruleset_name }}")
-input(type="imudp" port="{{ rsyslog_rule_remote_udp.port }}"
+module(load="imudp")
+input(type="imudp" port="{{ rsyslog_rule_remote_udp.port }}" ruleset="{{ rsyslog_rule_remote.ruleset_name }}"
 {%- if rsyslog_rule_remote_udp.address is defined %} address="{{ rsyslog_rule_remote_udp.address }}"{% endif -%})
 {% endif %}
 {% endblock %}
