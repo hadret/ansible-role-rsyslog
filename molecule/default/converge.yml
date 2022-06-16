@@ -43,4 +43,4 @@
       when: ansible_distribution == 'Debian'
 
   roles:
-    - role: ansible-role-rsyslog
+    - role: hadret.rsyslog
