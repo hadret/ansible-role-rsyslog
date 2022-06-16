@@ -1,6 +1,6 @@
 # Ansible Role: Rsyslog
 
-[![Build Status](https://travis-ci.com/hadret/ansible-role-rsyslog.svg?branch=master)](https://travis-ci.com/hadret/ansible-role-rsyslog)
+[![CI](https://github.com/hadret/ansible-role-rsyslog/actions/workflows/ci.yaml/badge.svg)](https://github.com/hadret/ansible-role-rsyslog/actions/workflows/ci.yaml)
 
 Installs and configures [rsyslog](https://rsyslog.com) on Debian/Ubuntu servers.
 
