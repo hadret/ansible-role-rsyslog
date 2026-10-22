@@ -30,8 +30,8 @@ jobs:
       fail-fast: false
       matrix:
         distro:
-          - ubuntu2204
-          - debian12
+          - ubuntu2404
+          - debian13
     steps:
       - uses: actions/checkout@v4
         with:
