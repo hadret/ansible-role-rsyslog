@@ -29,18 +29,10 @@
           input(type="imudp" port="514")
 
   pre_tasks:
-    - name: update apt cache
-      apt: update_cache=yes cache_valid_time=600
-      when: ansible_os_family == 'Debian'
-      changed_when: false
-    - name: fix missing dirmngr on Ubuntu 18.04 or later
-      apt: name=dirmngr state=present
-      changed_when: false
-      when: ansible_distribution == 'Ubuntu'
     - name: define rsyslog_user
       set_fact:
         rsyslog_user: "root"
-      when: ansible_distribution == 'Debian'
+      when: ansible_facts["distribution"] == 'Debian'
 
   roles:
     - role: hadret.rsyslog

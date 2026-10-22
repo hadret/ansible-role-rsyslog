@@ -1,6 +1,6 @@
 ---
 - name: include OS-specific variables
-  include_vars: "{{ ansible_os_family }}.yml"
+  include_vars: "{{ ansible_facts['os_family'] }}.yml"
 
 - name: define rsyslog_user
   set_fact:
@@ -28,10 +28,10 @@
   when: rsyslog_umask is not defined
 
 - include_tasks: setup-Debian.yml
-  when: ansible_distribution == 'Debian'
+  when: ansible_facts["distribution"] == 'Debian'
 
 - include_tasks: setup-Ubuntu.yml
-  when: ansible_distribution == 'Ubuntu'
+  when: ansible_facts["distribution"] == 'Ubuntu'
 
 # rules configuration
 - import_tasks: rules.yml

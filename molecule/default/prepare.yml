@@ -1,0 +1,16 @@
+---
+- name: prepare test instance
+  hosts: all
+  gather_facts: true
+
+  tasks:
+    - name: update apt cache
+      command: apt-get update
+      when: ansible_facts["os_family"] == 'Debian'
+      changed_when: false
+
+    - name: install dirmngr on Ubuntu
+      apt:
+        name: dirmngr
+        state: present
+      when: ansible_facts["distribution"] == 'Ubuntu'
