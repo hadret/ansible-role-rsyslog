@@ -6,9 +6,6 @@ name: CI
   push:
     branches: ["main"]
 
-permissions:
-  contents: read
-
 defaults:
   run:
     working-directory: hadret.rsyslog
@@ -20,6 +17,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           path: hadret.rsyslog
+          persist-credentials: false
       - uses: astral-sh/setup-uv@v6
         with:
           enable-cache: true
@@ -38,6 +36,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           path: hadret.rsyslog
+          persist-credentials: false
       - uses: astral-sh/setup-uv@v6
         with:
           enable-cache: true
