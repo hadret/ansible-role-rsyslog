@@ -63,6 +63,11 @@ jobs:
       - name: Install test dependencies.
         run: pip3 install ansible-core molecule 'molecule-plugins[docker]' docker
 
+      - name: Disable the host rsyslog AppArmor profile.
+        run: >-
+          sudo apparmor_parser -R
+          /etc/apparmor.d/usr.sbin.rsyslogd || true
+
       - name: Run Molecule tests.
         run: molecule test
         env:
