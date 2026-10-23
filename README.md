@@ -1,6 +1,6 @@
 # Ansible Role: Rsyslog
 
-[![CI](https://github.com/hadret/ansible-role-rsyslog/actions/workflows/ci.yaml/badge.svg)](https://github.com/hadret/ansible-role-rsyslog/actions/workflows/ci.yaml)
+[![CI](https://github.com/hadret/ansible-role-rsyslog/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/hadret/ansible-role-rsyslog/actions/workflows/ci.yaml?query=branch%3Amain)
 
 Installs and configures [rsyslog](https://rsyslog.com) on Debian/Ubuntu servers.
 
